@@ -39,6 +39,12 @@ const tokenCoreReferences = [
   'Transaction boundary: createCapsule parameters are visible before approval.',
 ]
 
+const anniversarySignals = [
+  { label: '2016', value: 'wallet origin' },
+  { label: '2026', value: 'AI co-creation' },
+  { label: '2030', value: 'future unlock' },
+]
+
 const stageLabels: Record<DemoStage, string> = {
   draft: 'Draft',
   compiled: 'Ready to sign',
@@ -145,6 +151,40 @@ function DataChip({ label, value }: { label: string; value: string }) {
   )
 }
 
+function AnniversaryMark() {
+  return (
+    <div className="rounded-lg border border-primary/30 bg-surface-blue p-4">
+      <div className="flex items-center gap-4">
+        <div className="flex size-16 shrink-0 items-center justify-center rounded-lg bg-primary text-display-lg font-bold text-primary-foreground">
+          10
+        </div>
+        <div>
+          <div className="text-caption font-semibold uppercase text-primary">
+            imToken anniversary edition
+          </div>
+          <div className="mt-1 text-title-sm font-bold">Tokens evolve. Control remains.</div>
+          <div className="mt-1 text-body-sm text-muted-foreground">
+            A time capsule built for the 10th AI co-creation challenge.
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+function AnniversaryTimeline() {
+  return (
+    <div className="grid gap-3 sm:grid-cols-3">
+      {anniversarySignals.map((signal) => (
+        <div key={signal.label} className="rounded-lg border border-border bg-background p-3">
+          <div className="text-title-sm font-bold text-primary">{signal.label}</div>
+          <div className="mt-1 text-caption text-muted-foreground">{signal.value}</div>
+        </div>
+      ))}
+    </div>
+  )
+}
+
 function PhonePreview({
   amount,
   capsuleId,
@@ -199,6 +239,18 @@ function PhonePreview({
               <Badge variant={stage === 'signed' ? 'success' : walletOpen ? 'primary' : 'neutral'}>
                 {phoneStatus}
               </Badge>
+            </div>
+
+            <div className="mt-4 rounded-lg border border-primary/30 bg-surface-blue p-3">
+              <div className="flex items-center justify-between gap-3">
+                <div>
+                  <div className="text-caption text-primary">10th anniversary</div>
+                  <div className="mt-1 text-body-sm font-bold">Control remains</div>
+                </div>
+                <div className="flex size-10 items-center justify-center rounded-lg bg-primary text-title-sm font-bold text-primary-foreground">
+                  10
+                </div>
+              </div>
             </div>
 
             <div className="mt-5 rounded-lg border border-border bg-surface-cool p-4">
@@ -383,13 +435,13 @@ function WalletDashboard() {
         <div className="rounded-lg border border-border bg-background p-5 shadow-[var(--shadow-card)] sm:p-7">
           <div className="flex flex-wrap items-center gap-3">
             <Badge variant="primary" size="lg">
-              Wallet Time Capsule
+              imToken 10th
             </Badge>
             <Badge variant="success" size="lg">
               Best User Control
             </Badge>
             <Badge variant="neutral" size="lg">
-              Token Core inspired
+              Wallet Time Capsule
             </Badge>
           </div>
 
@@ -407,10 +459,18 @@ function WalletDashboard() {
             </p>
           </div>
 
+          <div className="mt-6">
+            <AnniversaryMark />
+          </div>
+
           <div className="mt-6 grid gap-3 sm:grid-cols-3">
             <FieldPill label="Vault asset" value={amount} />
             <FieldPill label="Unlock date" value={unlockDate} />
             <FieldPill label="Price gate" value={`ETH > $${ethPrice}`} />
+          </div>
+
+          <div className="mt-3">
+            <AnniversaryTimeline />
           </div>
         </div>
 
