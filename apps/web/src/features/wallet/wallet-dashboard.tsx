@@ -23,7 +23,8 @@ import {
   WandSparkles,
   XIcon,
 } from 'lucide-react'
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
+import { loadTokenCoreDemoProof, type TokenCoreDemoProof } from './token-core-bridge'
 
 type DemoStage = 'draft' | 'compiled' | 'signed'
 
@@ -34,9 +35,9 @@ const riskChecks = [
 ]
 
 const tokenCoreReferences = [
-  'Local account ownership: AI prepares data, but the wallet keeps the key.',
-  'Typed-data review: EIP-712 fields are shown before any signature request.',
-  'Transaction boundary: createCapsule parameters are visible before approval.',
+  'Official tcx-wasm package is loaded in browser and derives a demo ETH account.',
+  'AI prepares EIP-712 data, while Token Core remains the signing boundary.',
+  'No mnemonic, seed phrase, private key, or real keystore is requested from users.',
 ]
 
 const anniversarySignals = [
@@ -185,6 +186,71 @@ function AnniversaryTimeline() {
   )
 }
 
+function TokenCoreBridgeCard({
+  proof,
+  status,
+}: {
+  proof: TokenCoreDemoProof | null
+  status: 'loading' | 'ready' | 'error'
+}) {
+  const statusCopy = {
+    error: 'Fallback visible',
+    loading: 'Loading wasm',
+    ready: 'tcx-wasm ready',
+  }[status]
+
+  return (
+    <Card>
+      <CardHeader>
+        <div>
+          <div className="mb-2 flex items-center gap-2 text-caption font-semibold text-primary">
+            <Cpu className="size-4" />
+            TOKEN CORE BRIDGE
+          </div>
+          <CardTitle>Core ability check</CardTitle>
+          <CardDescription>
+            Uses the official Token Core WebAssembly package for the demo wallet layer.
+          </CardDescription>
+        </div>
+        <Badge
+          variant={status === 'ready' ? 'success' : status === 'error' ? 'neutral' : 'primary'}
+        >
+          {statusCopy}
+        </Badge>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        <div className="rounded-lg border border-primary/30 bg-surface-blue p-4">
+          <div className="grid gap-2 font-mono text-caption">
+            <JsonLine label="package" value={proof?.packageName ?? '@consenlabs/tcx-wasm'} />
+            <JsonLine label="wasm" value={proof?.wasmAsset ?? 'tcx_wasm_bg.wasm'} />
+            <JsonLine label="chain" value={proof?.chain ?? 'ETHEREUM'} />
+            <JsonLine label="path" value={proof?.derivationPath ?? "m/44'/60'/0'/0/0"} />
+            <JsonLine
+              label="demo address"
+              value={proof?.address ?? 'deriving from demo entropy...'}
+            />
+            <JsonLine label="public key" value={proof?.publicKeyPreview ?? 'waiting for wasm'} />
+          </div>
+        </div>
+
+        <div className="grid gap-3">
+          {tokenCoreReferences.map((reference, index) => (
+            <div
+              key={reference}
+              className="flex gap-3 rounded-lg border border-border bg-background p-3 text-body-sm"
+            >
+              <IconBubble tone={index === 2 ? 'success' : 'primary'}>
+                {String(index + 1)}
+              </IconBubble>
+              <span>{reference}</span>
+            </div>
+          ))}
+        </div>
+      </CardContent>
+    </Card>
+  )
+}
+
 function PhonePreview({
   amount,
   capsuleId,
@@ -304,7 +370,7 @@ function PhonePreview({
                   Confirm signature
                 </div>
                 <p className="mt-2 text-caption text-muted-foreground">
-                  Token Core-style typed data is ready. Only the wallet owner can approve.
+                  Token Core typed data is ready. Only the wallet owner can approve.
                 </p>
                 <div className="mt-3 grid grid-cols-2 gap-2">
                   <div className="rounded-lg border border-border bg-background py-2 text-center text-caption">
@@ -355,6 +421,29 @@ function WalletDashboard() {
   const [confirmed, setConfirmed] = useState(false)
   const [stage, setStage] = useState<DemoStage>('draft')
   const [walletOpen, setWalletOpen] = useState(false)
+  const [tokenCoreProof, setTokenCoreProof] = useState<TokenCoreDemoProof | null>(null)
+  const [tokenCoreStatus, setTokenCoreStatus] = useState<'loading' | 'ready' | 'error'>('loading')
+
+  useEffect(() => {
+    let isMounted = true
+
+    loadTokenCoreDemoProof()
+      .then((proof) => {
+        if (isMounted) {
+          setTokenCoreProof(proof)
+          setTokenCoreStatus('ready')
+        }
+      })
+      .catch(() => {
+        if (isMounted) {
+          setTokenCoreStatus('error')
+        }
+      })
+
+    return () => {
+      isMounted = false
+    }
+  }, [])
 
   const signatureDigest = useMemo(() => {
     const seed = `${recipient}-${amount}-${unlockDate}-${ethPrice}-${letter.length}`
@@ -399,7 +488,7 @@ function WalletDashboard() {
     setConfirmed(false)
     setWalletOpen(false)
     toast.success('Time capsule compiled', {
-      description: 'AI generated Token Core-style signing data for review.',
+      description: 'AI generated Token Core signing data for review.',
     })
   }
 
@@ -411,17 +500,17 @@ function WalletDashboard() {
       return
     }
 
-    if (!confirmed) {
-      toast.error('Review required', {
-        description: 'Confirm the lock rules before requesting a signature.',
-      })
-      return
-    }
-
     setWalletOpen(true)
   }
 
   const handleSign = () => {
+    if (!confirmed) {
+      toast.error('Review required', {
+        description: 'Confirm the lock rules before sealing the capsule.',
+      })
+      return
+    }
+
     setStage('signed')
     setWalletOpen(false)
     toast.success('Capsule sealed', {
@@ -455,7 +544,7 @@ function WalletDashboard() {
             </h1>
             <p className="mt-4 max-w-xl text-body-lg leading-7 text-muted-foreground">
               Write a chain-native letter, attach assets, and let AI compile the unlock conditions
-              into Token Core-style signing data. AI drafts. You decide. Your wallet signs.
+              into Token Core signing data. AI drafts. You decide. Your wallet signs.
             </p>
           </div>
 
@@ -593,7 +682,9 @@ function WalletDashboard() {
                   <FileSignature className="size-4" />
                   EIP-712 typed-data preview
                 </span>
-                <Badge variant="primary">Token Core style</Badge>
+                <Badge variant={tokenCoreStatus === 'ready' ? 'success' : 'primary'}>
+                  {tokenCoreStatus === 'ready' ? 'tcx-wasm' : 'Token Core'}
+                </Badge>
               </div>
               <div className="mt-3 break-all font-mono text-body-sm text-foreground">
                 {signatureDigest}
@@ -626,23 +717,7 @@ function WalletDashboard() {
         </Card>
 
         <div className="grid gap-6 xl:grid-cols-[1fr_1fr]">
-          <Card>
-            <CardHeader>
-              <CardTitle>Token Core material use</CardTitle>
-              <CardDescription>How the prototype maps to wallet-core concepts.</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-3">
-              {tokenCoreReferences.map((reference, index) => (
-                <div
-                  key={reference}
-                  className="flex gap-3 rounded-lg border border-border bg-background p-3 text-body-sm"
-                >
-                  <IconBubble>{String(index + 1)}</IconBubble>
-                  <span>{reference}</span>
-                </div>
-              ))}
-            </CardContent>
-          </Card>
+          <TokenCoreBridgeCard proof={tokenCoreProof} status={tokenCoreStatus} />
 
           <Card>
             <CardHeader>
@@ -702,7 +777,7 @@ function WalletDashboard() {
                 <h2 className="mt-3 text-title-md font-bold">Review Token Core signing request</h2>
                 <p className="mt-2 text-body-sm text-muted-foreground">
                   This demo does not broadcast a real transaction. It shows the user-controlled
-                  approval screen that Token Core-style signing would protect.
+                  approval screen that Token Core signing would protect.
                 </p>
               </div>
               <Button variant="ghost" size="icon-sm" onClick={() => setWalletOpen(false)}>
@@ -719,11 +794,22 @@ function WalletDashboard() {
               <JsonLine label="digest" value={signatureDigest} />
             </div>
 
+            <div className="mt-4 flex items-start gap-3 rounded-lg border border-border bg-background p-4">
+              <Checkbox
+                id="wallet-reviewed"
+                checked={confirmed}
+                onCheckedChange={(value) => setConfirmed(value === true)}
+              />
+              <label htmlFor="wallet-reviewed" className="text-body-sm leading-5">
+                I can read every signing field, and no seed phrase or private key is requested.
+              </label>
+            </div>
+
             <div className="mt-5 grid gap-3 sm:grid-cols-2">
               <Button variant="outline" size="lg" onClick={() => setWalletOpen(false)}>
                 Reject
               </Button>
-              <Button size="lg" onClick={handleSign}>
+              <Button size="lg" onClick={handleSign} disabled={!confirmed}>
                 <CheckCircle2 className="size-4" />
                 Sign and seal capsule
               </Button>
