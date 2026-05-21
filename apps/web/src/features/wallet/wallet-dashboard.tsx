@@ -1,81 +1,136 @@
-import { ActionBar, ActionButton } from '@repo/ui/components/action-bar'
-import { AssetRow } from '@repo/ui/components/asset-row'
 import { Badge } from '@repo/ui/components/badge'
 import { Button } from '@repo/ui/components/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@repo/ui/components/card'
+import { Checkbox } from '@repo/ui/components/checkbox'
+import { Input } from '@repo/ui/components/input'
 import { Progress } from '@repo/ui/components/progress'
 import { StepCard } from '@repo/ui/components/step-card'
+import { Textarea } from '@repo/ui/components/textarea'
 import { toast } from '@repo/ui/components/toast'
-import { Link } from 'react-router'
-import { checklistSteps, walletAssets } from './mock-data'
+import { useMemo, useState } from 'react'
 
-function TokenAvatar({ symbol }: { symbol: string }) {
-  return (
-    <div className="flex size-11 shrink-0 items-center justify-center rounded-full bg-surface-blue text-body-sm font-bold text-primary">
-      {symbol.slice(0, 1)}
-    </div>
-  )
-}
+const capsuleSteps = [
+  {
+    label: 'Intent parsed',
+    detail: 'AI extracts recipient, asset, unlock rules, and message without taking custody.',
+    state: 'completed' as const,
+  },
+  {
+    label: 'Human review',
+    detail: 'You compare every compiled field before an EIP-712 signature is requested.',
+    state: 'active' as const,
+  },
+  {
+    label: 'Time capsule sealed',
+    detail: 'Funds move only after the signed vault transaction is confirmed onchain.',
+    state: 'pending' as const,
+  },
+]
+
+const riskChecks = [
+  '0.1 ETH will be locked until both unlock rules are met.',
+  'The letter is public metadata unless encrypted before upload.',
+  'Oracle-based price conditions can lag or fail during market stress.',
+]
 
 function Glyph({ children }: { children: string }) {
   return (
-    <span className="flex size-5 items-center justify-center rounded-full bg-primary-soft text-caption font-bold text-primary">
+    <span className="flex size-7 shrink-0 items-center justify-center rounded-full bg-primary-soft text-body-sm font-bold text-primary">
       {children}
     </span>
   )
 }
 
+function FieldPill({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="rounded-lg border border-border bg-background px-3 py-2">
+      <div className="text-caption text-muted-foreground">{label}</div>
+      <div className="mt-1 truncate text-body-md font-semibold">{value}</div>
+    </div>
+  )
+}
+
 function WalletDashboard() {
-  const handlePreviewToast = () => {
-    toast.success('UI Kit is ready', {
-      description: 'You can now build with shared wallet components.',
+  const [intent, setIntent] = useState(
+    'I want to leave 0.1 ETH and a letter for my daughter on her birthday in 2030. Unlock it only after block 32000000 and if ETH is above $8,000.',
+  )
+  const [recipient, setRecipient] = useState('0xDau9...2030')
+  const [amount, setAmount] = useState('0.1 ETH')
+  const [unlockDate, setUnlockDate] = useState('2030-06-18')
+  const [ethPrice, setEthPrice] = useState('8000')
+  const [letter, setLetter] = useState(
+    'Happy birthday. This is a tiny vault from the year imToken turned ten. Keep the key, keep the story, keep control.',
+  )
+  const [confirmed, setConfirmed] = useState(false)
+
+  const signatureDigest = useMemo(() => {
+    const seed = `${recipient}-${amount}-${unlockDate}-${ethPrice}-${letter.length}`
+    let hash = 0
+
+    for (let index = 0; index < seed.length; index += 1) {
+      hash = (hash * 31 + seed.charCodeAt(index)) >>> 0
+    }
+
+    return `0xCAPSULE${hash.toString(16).padStart(8, '0').toUpperCase()}`
+  }, [amount, ethPrice, letter.length, recipient, unlockDate])
+
+  const handleCompile = () => {
+    toast.success('Time capsule compiled', {
+      description: 'Review the EIP-712 preview before signing.',
+    })
+  }
+
+  const handleSeal = () => {
+    if (!confirmed) {
+      toast.error('Review required', {
+        description: 'Confirm the lock rules before requesting a signature.',
+      })
+      return
+    }
+
+    toast.success('Signature request prepared', {
+      description: 'Your wallet keeps the final signing key.',
     })
   }
 
   return (
-    <div className="mx-auto grid w-full max-w-6xl gap-6 lg:grid-cols-[1.05fr_0.95fr] lg:gap-8">
-      <section className="flex flex-col justify-center gap-6 rounded-3xl border border-border bg-surface-cool p-6 shadow-[var(--shadow-card)] sm:p-8 lg:p-10">
+    <div className="mx-auto grid w-full max-w-6xl gap-6 lg:grid-cols-[0.95fr_1.05fr] lg:gap-8">
+      <section className="flex flex-col gap-6 rounded-2xl border border-border bg-surface-cool p-5 shadow-[var(--shadow-card)] sm:p-7 lg:p-8">
         <div className="flex flex-wrap items-center gap-3">
           <Badge variant="primary" size="lg">
-            Co-Creation
+            Wallet Time Capsule
           </Badge>
-          <Badge variant="neutral" size="lg">
-            UI Kit
+          <Badge variant="success" size="lg">
+            Best User Control
           </Badge>
         </div>
 
-        <div className="max-w-2xl">
-          <p className="mb-4 text-body-md font-semibold text-primary">Wallet UI Starter Kit</p>
-          <h1 className="text-display-lg font-bold tracking-tight text-foreground">
-            Build consistent wallet experiences with AI agents.
+        <div>
+          <p className="mb-3 text-body-md font-semibold text-primary">AI co-creation concept</p>
+          <h1 className="max-w-xl text-display-lg font-bold text-foreground">
+            Seal a future gift without giving up the key.
           </h1>
-          <p className="mt-5 max-w-xl text-body-lg leading-7 text-muted-foreground">
-            A minimal React template for co-creation participants. It ships shared design tokens,
-            wallet-ready UI components, and a runnable demo surface.
+          <p className="mt-4 max-w-xl text-body-lg leading-7 text-muted-foreground">
+            Write a chain-native letter, attach assets, and let AI compile the unlock conditions
+            into reviewable transaction data. AI drafts. You decide. Your wallet signs.
           </p>
         </div>
 
         <div className="grid gap-3 sm:grid-cols-3">
-          <div className="rounded-2xl border border-border bg-card p-4">
-            <div className="text-caption text-muted-foreground">Design tokens</div>
-            <div className="mt-2 text-title-sm font-bold">Semantic</div>
-          </div>
-          <div className="rounded-2xl border border-border bg-card p-4">
-            <div className="text-caption text-muted-foreground">Components</div>
-            <div className="mt-2 text-title-sm font-bold">60+</div>
-          </div>
-          <div className="rounded-2xl border border-border bg-card p-4">
-            <div className="text-caption text-muted-foreground">Starter app</div>
-            <div className="mt-2 text-title-sm font-bold">Vite</div>
-          </div>
+          <FieldPill label="Vault asset" value={amount} />
+          <FieldPill label="Unlock date" value={unlockDate} />
+          <FieldPill label="Price gate" value={`ETH > $${ethPrice}`} />
         </div>
 
-        <div className="flex flex-col gap-3 sm:flex-row">
-          <Button size="hero" onClick={handlePreviewToast}>
-            Preview toast
-          </Button>
-          <Button variant="outline" size="hero" asChild>
-            <Link to="/ui-kit">Explore UI kit</Link>
+        <div className="rounded-lg border border-ai-subtle-border bg-ai-subtle-bg p-4">
+          <div className="text-caption font-semibold uppercase text-ai-text">Natural language intent</div>
+          <Textarea
+            className="mt-3 min-h-36 bg-background"
+            value={intent}
+            onChange={(event) => setIntent(event.target.value)}
+          />
+          <Button className="mt-4 w-full sm:w-auto" size="lg" onClick={handleCompile}>
+            Compile capsule
           </Button>
         </div>
       </section>
@@ -84,63 +139,108 @@ function WalletDashboard() {
         <Card>
           <CardHeader>
             <div>
-              <CardTitle>Unified balance</CardTitle>
-              <CardDescription>Mock data for starter-kit composition</CardDescription>
+              <CardTitle>AI compiled vault</CardTitle>
+              <CardDescription>Editable parameters before the wallet asks for your signature.</CardDescription>
             </div>
-            <Badge variant="success">Connected</Badge>
+            <Badge variant="neutral">Draft</Badge>
           </CardHeader>
-          <CardContent className="space-y-6">
-            <div>
-              <div className="text-caption text-muted-foreground">Total assets</div>
-              <div className="mt-2 text-display-lg font-bold tracking-tight">$7,276.40</div>
+          <CardContent className="space-y-5">
+            <div className="grid gap-3 sm:grid-cols-2">
+              <label className="space-y-2">
+                <span>Recipient</span>
+                <Input value={recipient} onChange={(event) => setRecipient(event.target.value)} />
+              </label>
+              <label className="space-y-2">
+                <span>Locked asset</span>
+                <Input value={amount} onChange={(event) => setAmount(event.target.value)} />
+              </label>
+              <label className="space-y-2">
+                <span>Earliest date</span>
+                <Input value={unlockDate} onChange={(event) => setUnlockDate(event.target.value)} />
+              </label>
+              <label className="space-y-2">
+                <span>ETH price condition</span>
+                <Input value={ethPrice} onChange={(event) => setEthPrice(event.target.value)} />
+              </label>
             </div>
 
-            <ActionBar columns={2} className="xl:grid-cols-4">
-              <ActionButton variant="primary" icon={<Glyph>+</Glyph>}>
-                Buy
-              </ActionButton>
-              <ActionButton icon={<Glyph>-&gt;</Glyph>}>Send</ActionButton>
-              <ActionButton icon={<Glyph>&lt;&gt;</Glyph>}>Swap</ActionButton>
-              <ActionButton icon={<Glyph>&lt;-</Glyph>}>Receive</ActionButton>
-            </ActionBar>
+            <label className="space-y-2">
+              <span>Letter payload</span>
+              <Textarea value={letter} onChange={(event) => setLetter(event.target.value)} />
+            </label>
 
-            <div className="space-y-2">
-              {walletAssets.map((asset) => (
-                <AssetRow
-                  key={asset.symbol}
-                  avatar={<TokenAvatar symbol={asset.symbol} />}
-                  symbol={asset.symbol}
-                  amount={asset.amount}
-                  value={asset.value}
-                  detail={asset.detail}
-                  detailColor="var(--positive)"
-                  className="bg-background"
-                />
-              ))}
+            <div className="rounded-lg border border-border bg-background p-4 font-mono text-caption">
+              <div className="flex items-center justify-between gap-3">
+                <span className="text-muted-foreground">EIP-712 digest</span>
+                <Badge variant="primary">typed data</Badge>
+              </div>
+              <div className="mt-3 break-all text-foreground">{signatureDigest}</div>
+              <div className="mt-3 grid gap-2 text-muted-foreground sm:grid-cols-2">
+                <span>domain: TimeCapsuleVault</span>
+                <span>chainId: 1</span>
+                <span>method: createCapsule</span>
+                <span>oracle: ETH/USD</span>
+              </div>
             </div>
+
+            <div className="flex items-start gap-3 rounded-lg border border-border bg-surface-cool p-4">
+              <Checkbox
+                id="reviewed"
+                checked={confirmed}
+                onCheckedChange={(value) => setConfirmed(value === true)}
+              />
+              <label htmlFor="reviewed" className="text-body-sm leading-5">
+                I reviewed the recipient, lock rules, and message. I understand AI cannot sign or
+                recover this capsule for me.
+              </label>
+            </div>
+
+            <Button className="w-full" size="hero" onClick={handleSeal}>
+              Seal with wallet
+            </Button>
           </CardContent>
         </Card>
 
-        <Card id="agent-checklist">
-          <CardHeader>
-            <CardTitle>AI agent checklist</CardTitle>
-            <CardDescription>Keep generated work aligned with the UI Kit.</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <Progress value={64} className="h-2" />
-            <div className="grid gap-3">
-              {checklistSteps.map((step, index) => (
-                <StepCard
-                  key={step.label}
-                  icon={<Glyph>{String(index + 1)}</Glyph>}
-                  label={step.label}
-                  detail={step.detail}
-                  state={step.state}
-                />
+        <div className="grid gap-6 xl:grid-cols-[0.9fr_1.1fr]">
+          <Card>
+            <CardHeader>
+              <CardTitle>Control score</CardTitle>
+              <CardDescription>Designed for explicit custody boundaries.</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <Progress value={88} className="h-2" />
+              <div className="grid gap-3">
+                {capsuleSteps.map((step, index) => (
+                  <StepCard
+                    key={step.label}
+                    icon={<Glyph>{String(index + 1)}</Glyph>}
+                    label={step.label}
+                    detail={step.detail}
+                    state={step.state}
+                  />
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Risk preview</CardTitle>
+              <CardDescription>AI turns hidden tradeoffs into signer-visible checks.</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              {riskChecks.map((check) => (
+                <div
+                  key={check}
+                  className="flex gap-3 rounded-lg border border-warning-border bg-warning-surface p-3 text-body-sm text-warning-text"
+                >
+                  <Glyph>!</Glyph>
+                  <span>{check}</span>
+                </div>
               ))}
-            </div>
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
+        </div>
       </section>
     </div>
   )
