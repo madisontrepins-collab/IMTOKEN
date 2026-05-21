@@ -49,6 +49,94 @@ function JsonLine({ label, value }: { label: string; value: string }) {
   )
 }
 
+function PhonePreview({
+  amount,
+  capsuleId,
+  ethPrice,
+  recipient,
+  signatureDigest,
+  stage,
+  unlockDate,
+  walletOpen,
+}: {
+  amount: string
+  capsuleId: string
+  ethPrice: string
+  recipient: string
+  signatureDigest: string
+  stage: DemoStage
+  unlockDate: string
+  walletOpen: boolean
+}) {
+  const phoneStatus = walletOpen ? 'Signing request' : stage === 'signed' ? 'Capsule sealed' : stage === 'compiled' ? 'Review ready' : 'Intent draft'
+  const phoneProgress = walletOpen ? 82 : stage === 'signed' ? 100 : stage === 'compiled' ? 58 : 18
+
+  return (
+    <aside className="lg:col-span-2 xl:col-span-1">
+      <div className="sticky top-8 mx-auto w-full max-w-sm rounded-2xl border border-border bg-foreground p-3 shadow-[var(--shadow-card-lg)]">
+        <div className="rounded-2xl bg-background p-4 text-foreground">
+          <div className="mx-auto mb-4 h-1.5 w-16 rounded-full bg-border" />
+
+          <div className="flex items-center justify-between">
+            <div>
+              <div className="text-caption text-muted-foreground">imToken wallet</div>
+              <div className="mt-1 text-title-sm font-bold">Time Capsule</div>
+            </div>
+            <Badge variant={stage === 'signed' ? 'success' : walletOpen ? 'primary' : 'neutral'}>{phoneStatus}</Badge>
+          </div>
+
+          <div className="mt-5 rounded-xl border border-border bg-surface-cool p-4">
+            <div className="text-caption text-muted-foreground">Locked gift</div>
+            <div className="mt-2 text-display-lg font-bold">{amount}</div>
+            <div className="mt-2 text-body-sm text-muted-foreground">For {recipient}</div>
+          </div>
+
+          <div className="mt-4 space-y-3">
+            <Progress value={phoneProgress} className="h-2" />
+            <div className="grid grid-cols-3 gap-2 text-center text-caption">
+              <span className={stage !== 'draft' || walletOpen ? 'text-primary' : 'text-muted-foreground'}>Compile</span>
+              <span className={walletOpen || stage === 'signed' ? 'text-primary' : 'text-muted-foreground'}>Review</span>
+              <span className={stage === 'signed' ? 'text-success-text' : 'text-muted-foreground'}>Seal</span>
+            </div>
+          </div>
+
+          <div className="mt-4 rounded-xl border border-border bg-background p-3 font-mono text-caption">
+            <JsonLine label="unlock" value={unlockDate} />
+            <JsonLine label="price" value={`ETH>$${ethPrice}`} />
+            <JsonLine label="digest" value={signatureDigest.slice(0, 16)} />
+          </div>
+
+          {walletOpen ? (
+            <div className="mt-4 rounded-xl border border-primary bg-surface-blue p-3">
+              <div className="text-body-sm font-bold">Confirm signature</div>
+              <p className="mt-1 text-caption text-muted-foreground">
+                Token Core-style typed data is ready. Only the wallet owner can approve.
+              </p>
+              <div className="mt-3 grid grid-cols-2 gap-2">
+                <div className="rounded-lg border border-border bg-background py-2 text-center text-caption">Reject</div>
+                <div className="rounded-lg bg-primary py-2 text-center text-caption font-semibold text-primary-foreground">
+                  Sign
+                </div>
+              </div>
+            </div>
+          ) : null}
+
+          {stage === 'signed' ? (
+            <div className="mt-4 rounded-xl border border-success-border bg-success-surface p-3">
+              <div className="text-body-sm font-bold text-success-text">Capsule receipt</div>
+              <div className="mt-2 font-mono text-caption text-success-text">{capsuleId}</div>
+            </div>
+          ) : null}
+
+          <div className="mt-5 rounded-full bg-foreground py-3 text-center text-body-sm font-semibold text-background">
+            {stage === 'signed' ? 'Ready for 2030' : walletOpen ? 'Awaiting user signature' : 'Self-custody preview'}
+          </div>
+        </div>
+      </div>
+    </aside>
+  )
+}
+
 function WalletDashboard() {
   const [intent, setIntent] = useState(
     'I want to leave 0.1 ETH and a letter for my daughter on her birthday in 2030. Unlock it only after block 32000000 and if ETH is above $8,000.',
@@ -133,7 +221,7 @@ function WalletDashboard() {
   }
 
   return (
-    <div className="mx-auto grid w-full max-w-6xl gap-6 lg:grid-cols-[0.92fr_1.08fr] lg:gap-8">
+    <div className="mx-auto grid w-full max-w-7xl gap-6 lg:grid-cols-[0.9fr_1.1fr] xl:grid-cols-[0.9fr_1fr_0.72fr] lg:gap-8">
       <section className="flex flex-col gap-6 rounded-2xl border border-border bg-surface-cool p-5 shadow-[var(--shadow-card)] sm:p-7 lg:p-8">
         <div className="flex flex-wrap items-center gap-3">
           <Badge variant="primary" size="lg">
@@ -321,6 +409,17 @@ function WalletDashboard() {
           </Card>
         ) : null}
       </section>
+
+      <PhonePreview
+        amount={amount}
+        capsuleId={capsuleId}
+        ethPrice={ethPrice}
+        recipient={recipient}
+        signatureDigest={signatureDigest}
+        stage={stage}
+        unlockDate={unlockDate}
+        walletOpen={walletOpen}
+      />
 
       {walletOpen ? (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-foreground/40 p-4">

@@ -17,5 +17,7 @@ describe('WalletDashboard', () => {
     expect(html).toContain('EIP-712 typed-data preview')
     expect(html).toContain('Token Core material use')
     expect(html).toContain('Open wallet review')
+    expect(html).toContain('imToken wallet')
+    expect(html).toContain('Self-custody preview')
   })
 })
