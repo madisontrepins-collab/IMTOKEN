@@ -70,7 +70,7 @@ function IconBubble({
 
 function FieldPill({ label, value }: { label: string; value: string }) {
   return (
-    <div className="rounded-lg border border-border bg-background px-4 py-3 shadow-[var(--shadow-card)]">
+    <div className="rounded-lg border border-border bg-background px-3 py-2 shadow-[var(--shadow-card)]">
       <div className="text-caption text-muted-foreground">{label}</div>
       <div className="mt-1 truncate text-body-md font-semibold">{value}</div>
     </div>
@@ -105,15 +105,15 @@ function CapsuleMap({ stage, walletOpen }: { stage: DemoStage; walletOpen: boole
   ]
 
   return (
-    <div className="rounded-2xl border border-border bg-background p-5 shadow-[var(--shadow-card)]">
-      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+    <div className="rounded-lg border border-border bg-background p-4 shadow-[var(--shadow-card)]">
+      <div className="grid gap-3 sm:grid-cols-4">
         {items.map((item, index) => (
           <div
             key={item.label}
-            className="relative rounded-lg border border-border bg-surface-cool p-4"
+            className="relative rounded-lg border border-border bg-surface-cool p-3"
           >
             {index < items.length - 1 ? (
-              <ArrowRight className="absolute top-1/2 -right-5 hidden size-4 -translate-y-1/2 text-muted-foreground xl:block" />
+              <ArrowRight className="absolute top-1/2 -right-4 hidden size-4 -translate-y-1/2 text-muted-foreground sm:block" />
             ) : null}
             <IconBubble tone={item.active ? 'primary' : 'neutral'}>{item.icon}</IconBubble>
             <div className="mt-3 text-body-sm font-bold">{item.label}</div>
@@ -121,7 +121,7 @@ function CapsuleMap({ stage, walletOpen }: { stage: DemoStage; walletOpen: boole
           </div>
         ))}
       </div>
-      <div className="mt-5 rounded-lg border border-primary/30 bg-surface-blue p-5">
+      <div className="mt-4 rounded-lg border border-primary/30 bg-surface-blue p-4">
         <div className="flex items-center justify-between gap-3">
           <div>
             <div className="text-caption text-muted-foreground">Capsule object</div>
@@ -138,7 +138,7 @@ function CapsuleMap({ stage, walletOpen }: { stage: DemoStage; walletOpen: boole
 
 function DataChip({ label, value }: { label: string; value: string }) {
   return (
-    <div className="rounded-lg border border-border bg-surface-cool px-4 py-3">
+    <div className="rounded-lg border border-border bg-surface-cool px-3 py-2">
       <div className="text-caption text-muted-foreground">{label}</div>
       <div className="mt-1 font-mono text-caption text-foreground">{value}</div>
     </div>
@@ -175,8 +175,8 @@ function PhonePreview({
   const phoneTone = stage === 'signed' ? 'success' : walletOpen ? 'primary' : 'neutral'
 
   return (
-    <aside className="w-full">
-      <div className="mx-auto w-full max-w-sm xl:ml-auto">
+    <aside className="lg:col-span-2 xl:col-span-1">
+      <div className="sticky top-8 mx-auto w-full max-w-sm">
         <div className="mb-3 flex items-center justify-between rounded-lg border border-border bg-background px-4 py-3 shadow-[var(--shadow-card)]">
           <div>
             <div className="text-caption text-muted-foreground">Live phone view</div>
@@ -188,7 +188,7 @@ function PhonePreview({
         </div>
 
         <div className="rounded-[2rem] border border-foreground bg-foreground p-3 shadow-[var(--shadow-card-lg)]">
-          <div className="min-h-[620px] rounded-[1.5rem] bg-background p-4 text-foreground">
+          <div className="min-h-[680px] rounded-[1.5rem] bg-background p-4 text-foreground">
             <div className="mx-auto mb-4 h-1.5 w-16 rounded-full bg-border" />
 
             <div className="flex items-center justify-between">
@@ -378,9 +378,9 @@ function WalletDashboard() {
   }
 
   return (
-    <div className="mx-auto flex w-full max-w-7xl flex-col gap-10">
-      <section className="grid items-center gap-10 rounded-[2rem] border border-border bg-background p-6 shadow-[var(--shadow-card-lg)] sm:p-10 xl:grid-cols-[minmax(0,1fr)_25rem] xl:p-12">
-        <div className="min-w-0">
+    <div className="mx-auto grid w-full max-w-7xl gap-6 lg:grid-cols-[0.9fr_1.1fr] xl:grid-cols-[0.88fr_1fr_0.72fr] lg:gap-8">
+      <section className="flex flex-col gap-5">
+        <div className="rounded-lg border border-border bg-background p-5 shadow-[var(--shadow-card)] sm:p-7">
           <div className="flex flex-wrap items-center gap-3">
             <Badge variant="primary" size="lg">
               Wallet Time Capsule
@@ -393,250 +393,245 @@ function WalletDashboard() {
             </Badge>
           </div>
 
-          <div className="mt-10">
-            <div className="mb-4 flex items-center gap-2 text-body-md font-semibold text-primary">
+          <div className="mt-7">
+            <div className="mb-3 flex items-center gap-2 text-body-md font-semibold text-primary">
               <Sparkles className="size-4" />
               Runnable AI wallet demo
             </div>
-            <h1 className="max-w-3xl text-display-lg font-bold text-foreground">
+            <h1 className="max-w-xl text-display-lg font-bold text-foreground">
               Seal a future gift without giving up the key.
             </h1>
-            <p className="mt-5 max-w-2xl text-body-lg leading-8 text-muted-foreground">
+            <p className="mt-4 max-w-xl text-body-lg leading-7 text-muted-foreground">
               Write a chain-native letter, attach assets, and let AI compile the unlock conditions
-              into Token Core-style signing data. AI drafts the capsule. The wallet owner keeps
-              control.
+              into Token Core-style signing data. AI drafts. You decide. Your wallet signs.
             </p>
           </div>
 
-          <div className="mt-8 grid gap-4 sm:grid-cols-3">
+          <div className="mt-6 grid gap-3 sm:grid-cols-3">
             <FieldPill label="Vault asset" value={amount} />
             <FieldPill label="Unlock date" value={unlockDate} />
             <FieldPill label="Price gate" value={`ETH > $${ethPrice}`} />
           </div>
         </div>
 
-        <PhonePreview
-          amount={amount}
-          capsuleId={capsuleId}
-          ethPrice={ethPrice}
-          recipient={recipient}
-          signatureDigest={signatureDigest}
-          stage={stage}
-          unlockDate={unlockDate}
-          walletOpen={walletOpen}
-        />
+        <CapsuleMap stage={stage} walletOpen={walletOpen} />
 
-        <div className="xl:col-span-2">
-          <CapsuleMap stage={stage} walletOpen={walletOpen} />
+        <div className="rounded-lg border border-ai-subtle-border bg-ai-subtle-bg p-4 shadow-[var(--shadow-card)]">
+          <div className="flex items-center justify-between gap-3">
+            <div className="flex items-center gap-2 text-caption font-semibold uppercase text-ai-text">
+              <WandSparkles className="size-4" />
+              Natural language intent
+            </div>
+            <Badge variant={stage === 'draft' ? 'neutral' : 'primary'}>{statusBadge}</Badge>
+          </div>
+          <Textarea
+            className="mt-3 min-h-36 bg-background"
+            value={intent}
+            onChange={(event) => setIntent(event.target.value)}
+          />
+          <div className="mt-4 flex flex-col gap-3 sm:flex-row">
+            <Button className="w-full sm:w-auto" size="lg" onClick={handleCompile}>
+              <WandSparkles className="size-4" />
+              Compile capsule
+            </Button>
+            <Button className="w-full sm:w-auto" variant="outline" size="lg" onClick={handleSeal}>
+              <WalletCards className="size-4" />
+              Open wallet review
+            </Button>
+          </div>
         </div>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Demo flow</CardTitle>
+            <CardDescription>Complete these steps in order during judging.</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <Progress value={flowProgress} className="h-2" />
+            {capsuleSteps.map((step, index) => (
+              <StepCard
+                key={step.label}
+                icon={<IconBubble>{String(index + 1)}</IconBubble>}
+                label={step.label}
+                detail={step.detail}
+                state={step.state}
+              />
+            ))}
+          </CardContent>
+        </Card>
       </section>
 
-      <section className="grid gap-8 xl:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
-        <div className="grid content-start gap-8">
-          <div className="rounded-2xl border border-ai-subtle-border bg-ai-subtle-bg p-6 shadow-[var(--shadow-card)] sm:p-8">
-            <div className="flex items-center justify-between gap-3">
-              <div className="flex items-center gap-2 text-caption font-semibold uppercase text-ai-text">
-                <WandSparkles className="size-4" />
-                Natural language intent
+      <section className="grid gap-6">
+        <Card>
+          <CardHeader>
+            <div>
+              <div className="mb-2 flex items-center gap-2 text-caption font-semibold text-primary">
+                <LockKeyhole className="size-4" />
+                USER CONTROL CONSOLE
               </div>
-              <Badge variant={stage === 'draft' ? 'neutral' : 'primary'}>{statusBadge}</Badge>
+              <CardTitle>AI compiled vault</CardTitle>
+              <CardDescription>
+                Editable parameters before the wallet asks for your signature.
+              </CardDescription>
             </div>
-            <Textarea
-              className="mt-5 min-h-44 bg-background"
-              value={intent}
-              onChange={(event) => setIntent(event.target.value)}
-            />
-            <div className="mt-6 flex flex-col gap-3 sm:flex-row">
-              <Button className="w-full sm:w-auto" size="lg" onClick={handleCompile}>
-                <WandSparkles className="size-4" />
-                Compile capsule
-              </Button>
-              <Button className="w-full sm:w-auto" variant="outline" size="lg" onClick={handleSeal}>
-                <WalletCards className="size-4" />
-                Open wallet review
-              </Button>
+            <Badge
+              variant={
+                stage === 'signed' ? 'success' : stage === 'compiled' ? 'primary' : 'neutral'
+              }
+            >
+              {statusBadge}
+            </Badge>
+          </CardHeader>
+          <CardContent className="space-y-5">
+            <div className="grid gap-3 sm:grid-cols-2">
+              <label className="space-y-2" htmlFor="capsule-recipient">
+                <span>Recipient</span>
+                <Input
+                  id="capsule-recipient"
+                  value={recipient}
+                  onChange={(event) => setRecipient(event.target.value)}
+                />
+              </label>
+              <label className="space-y-2" htmlFor="capsule-amount">
+                <span>Locked asset</span>
+                <Input
+                  id="capsule-amount"
+                  value={amount}
+                  onChange={(event) => setAmount(event.target.value)}
+                />
+              </label>
+              <label className="space-y-2" htmlFor="capsule-unlock-date">
+                <span>Earliest date</span>
+                <Input
+                  id="capsule-unlock-date"
+                  value={unlockDate}
+                  onChange={(event) => setUnlockDate(event.target.value)}
+                />
+              </label>
+              <label className="space-y-2" htmlFor="capsule-eth-price">
+                <span>ETH price condition</span>
+                <Input
+                  id="capsule-eth-price"
+                  value={ethPrice}
+                  onChange={(event) => setEthPrice(event.target.value)}
+                />
+              </label>
             </div>
-          </div>
+
+            <label className="space-y-2" htmlFor="capsule-letter">
+              <span>Letter payload</span>
+              <Textarea
+                id="capsule-letter"
+                value={letter}
+                onChange={(event) => setLetter(event.target.value)}
+              />
+            </label>
+
+            <div className="rounded-lg border border-border bg-background p-4">
+              <div className="flex items-center justify-between gap-3 text-caption">
+                <span className="flex items-center gap-2 text-muted-foreground">
+                  <FileSignature className="size-4" />
+                  EIP-712 typed-data preview
+                </span>
+                <Badge variant="primary">Token Core style</Badge>
+              </div>
+              <div className="mt-3 break-all font-mono text-body-sm text-foreground">
+                {signatureDigest}
+              </div>
+              <div className="mt-3 grid gap-2 sm:grid-cols-2">
+                <DataChip label="domain" value="TimeCapsuleVault" />
+                <DataChip label="chainId" value="1" />
+                <DataChip label="method" value="createCapsule" />
+                <DataChip label="oracle" value="ETH/USD" />
+              </div>
+            </div>
+
+            <div className="flex items-start gap-3 rounded-lg border border-border bg-surface-cool p-4">
+              <Checkbox
+                id="reviewed"
+                checked={confirmed}
+                onCheckedChange={(value) => setConfirmed(value === true)}
+              />
+              <label htmlFor="reviewed" className="text-body-sm leading-5">
+                I reviewed the recipient, lock rules, and message. I understand AI cannot sign or
+                recover this capsule for me.
+              </label>
+            </div>
+
+            <Button className="w-full" size="hero" onClick={handleSeal}>
+              <KeyRound className="size-5" />
+              Seal with wallet
+            </Button>
+          </CardContent>
+        </Card>
+
+        <div className="grid gap-6 xl:grid-cols-[1fr_1fr]">
+          <Card>
+            <CardHeader>
+              <CardTitle>Token Core material use</CardTitle>
+              <CardDescription>How the prototype maps to wallet-core concepts.</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              {tokenCoreReferences.map((reference, index) => (
+                <div
+                  key={reference}
+                  className="flex gap-3 rounded-lg border border-border bg-background p-3 text-body-sm"
+                >
+                  <IconBubble>{String(index + 1)}</IconBubble>
+                  <span>{reference}</span>
+                </div>
+              ))}
+            </CardContent>
+          </Card>
 
           <Card>
             <CardHeader>
-              <CardTitle>Demo flow</CardTitle>
-              <CardDescription>Complete these steps in order during judging.</CardDescription>
+              <CardTitle>Risk preview</CardTitle>
+              <CardDescription>
+                AI turns hidden tradeoffs into signer-visible checks.
+              </CardDescription>
             </CardHeader>
-            <CardContent className="space-y-5">
-              <Progress value={flowProgress} className="h-2" />
-              {capsuleSteps.map((step, index) => (
-                <StepCard
-                  key={step.label}
-                  icon={<IconBubble>{String(index + 1)}</IconBubble>}
-                  label={step.label}
-                  detail={step.detail}
-                  state={step.state}
-                />
+            <CardContent className="space-y-3">
+              {riskChecks.map((check) => (
+                <div
+                  key={check}
+                  className="flex gap-3 rounded-lg border border-warning-border bg-warning-surface p-3 text-body-sm text-warning-text"
+                >
+                  <IconBubble tone="warning">
+                    <AlertTriangle />
+                  </IconBubble>
+                  <span>{check}</span>
+                </div>
               ))}
             </CardContent>
           </Card>
         </div>
 
-        <div className="grid content-start gap-8">
+        {stage === 'signed' ? (
           <Card>
             <CardHeader>
-              <div>
-                <div className="mb-2 flex items-center gap-2 text-caption font-semibold text-primary">
-                  <LockKeyhole className="size-4" />
-                  USER CONTROL CONSOLE
-                </div>
-                <CardTitle>AI compiled vault</CardTitle>
-                <CardDescription>
-                  Editable parameters before the wallet asks for your signature.
-                </CardDescription>
-              </div>
-              <Badge
-                variant={
-                  stage === 'signed' ? 'success' : stage === 'compiled' ? 'primary' : 'neutral'
-                }
-              >
-                {statusBadge}
-              </Badge>
+              <CardTitle>Demo capsule receipt</CardTitle>
+              <CardDescription>The basic flow is complete and ready to show.</CardDescription>
             </CardHeader>
-            <CardContent className="space-y-6">
-              <div className="grid gap-4 sm:grid-cols-2">
-                <label className="space-y-2" htmlFor="capsule-recipient">
-                  <span>Recipient</span>
-                  <Input
-                    id="capsule-recipient"
-                    value={recipient}
-                    onChange={(event) => setRecipient(event.target.value)}
-                  />
-                </label>
-                <label className="space-y-2" htmlFor="capsule-amount">
-                  <span>Locked asset</span>
-                  <Input
-                    id="capsule-amount"
-                    value={amount}
-                    onChange={(event) => setAmount(event.target.value)}
-                  />
-                </label>
-                <label className="space-y-2" htmlFor="capsule-unlock-date">
-                  <span>Earliest date</span>
-                  <Input
-                    id="capsule-unlock-date"
-                    value={unlockDate}
-                    onChange={(event) => setUnlockDate(event.target.value)}
-                  />
-                </label>
-                <label className="space-y-2" htmlFor="capsule-eth-price">
-                  <span>ETH price condition</span>
-                  <Input
-                    id="capsule-eth-price"
-                    value={ethPrice}
-                    onChange={(event) => setEthPrice(event.target.value)}
-                  />
-                </label>
-              </div>
-
-              <label className="space-y-2" htmlFor="capsule-letter">
-                <span>Letter payload</span>
-                <Textarea
-                  id="capsule-letter"
-                  value={letter}
-                  onChange={(event) => setLetter(event.target.value)}
-                />
-              </label>
-
-              <div className="rounded-lg border border-border bg-background p-5">
-                <div className="flex items-center justify-between gap-3 text-caption">
-                  <span className="flex items-center gap-2 text-muted-foreground">
-                    <FileSignature className="size-4" />
-                    EIP-712 typed-data preview
-                  </span>
-                  <Badge variant="primary">Token Core style</Badge>
-                </div>
-                <div className="mt-3 break-all font-mono text-body-sm text-foreground">
-                  {signatureDigest}
-                </div>
-                <div className="mt-4 grid gap-3 sm:grid-cols-2">
-                  <DataChip label="domain" value="TimeCapsuleVault" />
-                  <DataChip label="chainId" value="1" />
-                  <DataChip label="method" value="createCapsule" />
-                  <DataChip label="oracle" value="ETH/USD" />
-                </div>
-              </div>
-
-              <div className="flex items-start gap-3 rounded-lg border border-border bg-surface-cool p-4">
-                <Checkbox
-                  id="reviewed"
-                  checked={confirmed}
-                  onCheckedChange={(value) => setConfirmed(value === true)}
-                />
-                <label htmlFor="reviewed" className="text-body-sm leading-5">
-                  I reviewed the recipient, lock rules, and message. I understand AI cannot sign or
-                  recover this capsule for me.
-                </label>
-              </div>
-
-              <Button className="w-full" size="hero" onClick={handleSeal}>
-                <KeyRound className="size-5" />
-                Seal with wallet
-              </Button>
+            <CardContent className="rounded-lg border border-success-border bg-success-surface p-4 font-mono text-caption text-success-text">
+              <JsonLine label="capsuleId" value={capsuleId} />
+              <JsonLine label="status" value="sealed_by_user_signature" />
+              <JsonLine label="digest" value={signatureDigest} />
             </CardContent>
           </Card>
-        </div>
+        ) : null}
       </section>
 
-      <section className="grid gap-8 xl:grid-cols-[1fr_1fr]">
-        <Card>
-          <CardHeader>
-            <CardTitle>Token Core material use</CardTitle>
-            <CardDescription>How the prototype maps to wallet-core concepts.</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            {tokenCoreReferences.map((reference, index) => (
-              <div
-                key={reference}
-                className="flex gap-4 rounded-lg border border-border bg-background p-4 text-body-sm"
-              >
-                <IconBubble>{String(index + 1)}</IconBubble>
-                <span>{reference}</span>
-              </div>
-            ))}
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle>Risk preview</CardTitle>
-            <CardDescription>AI turns hidden tradeoffs into signer-visible checks.</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            {riskChecks.map((check) => (
-              <div
-                key={check}
-                className="flex gap-4 rounded-lg border border-warning-border bg-warning-surface p-4 text-body-sm text-warning-text"
-              >
-                <IconBubble tone="warning">
-                  <AlertTriangle />
-                </IconBubble>
-                <span>{check}</span>
-              </div>
-            ))}
-          </CardContent>
-        </Card>
-      </section>
-
-      {stage === 'signed' ? (
-        <Card>
-          <CardHeader>
-            <CardTitle>Demo capsule receipt</CardTitle>
-            <CardDescription>The basic flow is complete and ready to show.</CardDescription>
-          </CardHeader>
-          <CardContent className="rounded-lg border border-success-border bg-success-surface p-4 font-mono text-caption text-success-text">
-            <JsonLine label="capsuleId" value={capsuleId} />
-            <JsonLine label="status" value="sealed_by_user_signature" />
-            <JsonLine label="digest" value={signatureDigest} />
-          </CardContent>
-        </Card>
-      ) : null}
+      <PhonePreview
+        amount={amount}
+        capsuleId={capsuleId}
+        ethPrice={ethPrice}
+        recipient={recipient}
+        signatureDigest={signatureDigest}
+        stage={stage}
+        unlockDate={unlockDate}
+        walletOpen={walletOpen}
+      />
 
       {walletOpen ? (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-foreground/40 p-4">
